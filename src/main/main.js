@@ -8,6 +8,9 @@ import { createAppMenu } from './menu.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Disable GPU acceleration on environments without GPU support (e.g. WSL2)
+app.disableHardwareAcceleration();
+
 let mainWindow;
 
 async function createWindow() {
