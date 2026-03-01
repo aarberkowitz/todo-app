@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
+  <title>To Do</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/sidebar.css">
+  <link rel="stylesheet" href="css/tasklist.css">
+  <link rel="stylesheet" href="css/detail.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <h1 class="app-title">To Do</h1>
+      </div>
+      <nav class="smart-lists">
+        <button class="sidebar-item" data-filter="my-day">
+          <span class="sidebar-icon">&#9788;</span>
+          <span class="sidebar-label">My Day</span>
+          <span class="sidebar-count" data-count="my-day"></span>
+        </button>
+        <button class="sidebar-item" data-filter="important">
+          <span class="sidebar-icon">&#9733;</span>
+          <span class="sidebar-label">Important</span>
+          <span class="sidebar-count" data-count="important"></span>
+        </button>
+        <button class="sidebar-item" data-filter="planned">
+          <span class="sidebar-icon">&#128197;</span>
+          <span class="sidebar-label">Planned</span>
+          <span class="sidebar-count" data-count="planned"></span>
+        </button>
+        <button class="sidebar-item" data-filter="all">
+          <span class="sidebar-icon">&#8962;</span>
+          <span class="sidebar-label">All Tasks</span>
+          <span class="sidebar-count" data-count="all"></span>
+        </button>
+      </nav>
+      <div class="sidebar-divider"></div>
+      <div id="user-lists" class="user-lists"></div>
+      <button id="add-list-btn" class="sidebar-item add-list">
+        <span class="sidebar-icon">+</span>
+        <span class="sidebar-label">New List</span>
+      </button>
+    </aside>
+
+    <!-- Task List Panel -->
+    <main id="task-panel">
+      <div class="task-panel-header">
+        <h2 id="task-panel-title">Select a list</h2>
+      </div>
+      <div id="add-task-area" class="add-task-area" style="display:none;">
+        <input type="text" id="add-task-input" placeholder="Add a task" autocomplete="off">
+      </div>
+      <div id="task-list" class="task-list"></div>
+      <div id="completed-section" class="completed-section" style="display:none;">
+        <button id="completed-toggle" class="completed-toggle">
+          <span class="completed-arrow">&#9654;</span>
+          Completed <span id="completed-count"></span>
+        </button>
+        <div id="completed-list" class="completed-list" style="display:none;"></div>
+      </div>
+      <div id="empty-state" class="empty-state" style="display:none;">
+        <p class="empty-state-text"></p>
+      </div>
+    </main>
+
+    <!-- Detail Panel -->
+    <aside id="detail-panel" class="detail-panel" style="display:none;">
+      <div class="detail-header">
+        <button id="detail-close" class="detail-close" title="Close">&times;</button>
+      </div>
+      <div class="detail-body">
+        <div class="detail-field">
+          <input type="text" id="detail-title" class="detail-title" placeholder="Task title">
+        </div>
+        <div class="detail-field">
+          <button id="detail-myday" class="detail-btn">
+            <span class="detail-btn-icon">&#9788;</span>
+            <span id="detail-myday-label">Add to My Day</span>
+          </button>
+        </div>
+        <div class="detail-field">
+          <label class="detail-label">Due date</label>
+          <input type="date" id="detail-due-date" class="detail-input">
+        </div>
+        <div class="detail-field">
+          <label class="detail-label">Priority</label>
+          <select id="detail-priority" class="detail-input">
+            <option value="none">None</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div class="detail-field">
+          <label class="detail-label">Notes</label>
+          <textarea id="detail-notes" class="detail-textarea" placeholder="Add notes..."></textarea>
+        </div>
+        <div class="detail-footer">
+          <button id="detail-delete" class="btn btn-danger">Delete task</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div id="dialog-overlay" class="dialog-overlay" style="display:none;">
+    <div class="dialog">
+      <p id="dialog-message" class="dialog-message"></p>
+      <div class="dialog-actions">
+        <button id="dialog-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="dialog-confirm" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rename Dialog -->
+  <div id="rename-overlay" class="dialog-overlay" style="display:none;">
+    <div class="dialog">
+      <p class="dialog-message">Rename list</p>
+      <input type="text" id="rename-input" class="detail-input" style="margin-bottom:16px;">
+      <div class="dialog-actions">
+        <button id="rename-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="rename-confirm" class="btn btn-primary">Rename</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Context Menu -->
+  <div id="context-menu" class="context-menu" style="display:none;">
+    <button class="context-menu-item" data-action="rename">Rename</button>
+    <button class="context-menu-item" data-action="delete">Delete</button>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
