@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/tasklist.css">
   <link rel="stylesheet" href="css/detail.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/calendar.css">
 </head>
 <body>
   <div id="app">
@@ -39,12 +40,16 @@
           <span class="sidebar-label">All Tasks</span>
           <span class="sidebar-count" data-count="all"></span>
         </button>
+        <button class="sidebar-item" data-filter="calendar">
+          <span class="sidebar-icon">&#128198;</span>
+          <span class="sidebar-label">Calendar</span>
+        </button>
       </nav>
       <div class="sidebar-divider"></div>
       <div id="user-lists" class="user-lists"></div>
       <button id="add-list-btn" class="sidebar-item add-list">
         <span class="sidebar-icon">+</span>
-        <span class="sidebar-label">New List</span>
+        <span class="sidebar-label">New Project</span>
       </button>
     </aside>
 
@@ -75,6 +80,7 @@
         <button id="detail-close" class="detail-close" title="Close">&times;</button>
       </div>
       <div class="detail-body">
+        <div id="detail-parent-info" class="detail-parent-info" style="display:none;"></div>
         <div class="detail-field">
           <input type="text" id="detail-title" class="detail-title" placeholder="Task title">
         </div>
@@ -106,6 +112,28 @@
         </div>
       </div>
     </aside>
+
+    <!-- Calendar View -->
+    <div id="calendar-view" style="display:none;">
+      <div id="calendar-sidebar">
+        <div class="calendar-sidebar-header">
+          <h3>Unscheduled</h3>
+        </div>
+        <div id="calendar-unscheduled-list" class="calendar-unscheduled-list"></div>
+      </div>
+      <div id="calendar-main">
+        <div class="calendar-nav">
+          <button id="calendar-prev" class="calendar-nav-btn" title="Previous day">&lsaquo;</button>
+          <button id="calendar-today" class="calendar-nav-btn" title="Go to today">Today</button>
+          <button id="calendar-next" class="calendar-nav-btn" title="Next day">&rsaquo;</button>
+          <span id="calendar-date-label" class="calendar-date-label"></span>
+          <input type="date" id="calendar-date-picker" class="calendar-date-picker">
+        </div>
+        <div id="calendar-grid-container" class="calendar-grid-container">
+          <div id="calendar-grid" class="calendar-grid"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Confirmation Dialog -->
@@ -122,7 +150,7 @@
   <!-- Rename Dialog -->
   <div id="rename-overlay" class="dialog-overlay" style="display:none;">
     <div class="dialog">
-      <p class="dialog-message">Rename list</p>
+      <p class="dialog-message">Rename project</p>
       <input type="text" id="rename-input" class="detail-input" style="margin-bottom:16px;">
       <div class="dialog-actions">
         <button id="rename-cancel" class="btn btn-secondary">Cancel</button>

@@ -46,9 +46,18 @@ export function initDetailPanel() {
   // Delete
   $('#detail-delete').addEventListener('click', async () => {
     if (!currentTask) return;
-    const confirmed = await showConfirm(
-      `Delete "${currentTask.title}"? This cannot be undone.`
-    );
+
+    let message = `Delete "${currentTask.title}"? This cannot be undone.`;
+
+    // Check for subtasks if this is a top-level task
+    if (!currentTask.parentTaskId) {
+      const subtasks = await window.api.getSubtasks(currentTask.id);
+      if (subtasks.length > 0) {
+        message = `Delete "${currentTask.title}" and its ${subtasks.length} subtask${subtasks.length !== 1 ? 's' : ''}? This cannot be undone.`;
+      }
+    }
+
+    const confirmed = await showConfirm(message);
     if (confirmed) {
       await window.api.deleteTask(currentTask.id);
       state.clearSelectedTask();
@@ -76,17 +85,37 @@ async function onTaskSelected(taskId) {
   }
 
   currentTask = tasks.find((t) => t.id === taskId);
+
+  // Fallback: task not in current view's list (e.g. subtask selected from calendar)
+  if (!currentTask) {
+    currentTask = await window.api.getTask(taskId);
+  }
+
   if (!currentTask) {
     panel.style.display = 'none';
     return;
   }
 
-  populatePanel();
+  await populatePanel();
   panel.style.display = 'flex';
 }
 
-function populatePanel() {
+async function populatePanel() {
   if (!currentTask) return;
+
+  // Parent info
+  const parentInfoEl = $('#detail-parent-info');
+  if (currentTask.parentTaskId) {
+    const parent = await window.api.getTask(currentTask.parentTaskId);
+    if (parent) {
+      parentInfoEl.textContent = `Subtask of: ${parent.title}`;
+      parentInfoEl.style.display = 'block';
+    } else {
+      parentInfoEl.style.display = 'none';
+    }
+  } else {
+    parentInfoEl.style.display = 'none';
+  }
 
   $('#detail-title').value = currentTask.title;
   $('#detail-due-date').value = currentTask.dueDate || '';

@@ -25,6 +25,19 @@ export async function initDB() {
   dbInstance.data.tasks ??= [];
   dbInstance.data.settings ??= { lastSelectedListId: null, windowBounds: {} };
 
+  // Create default "Tasks" project on first launch
+  if (dbInstance.data.lists.length === 0) {
+    const defaultList = {
+      id: crypto.randomUUID(),
+      name: 'Tasks',
+      createdAt: new Date().toISOString(),
+      sortOrder: 0,
+    };
+    dbInstance.data.lists.push(defaultList);
+    dbInstance.data.settings.lastSelectedListId = defaultList.id;
+    await dbInstance.write();
+  }
+
   return { db: dbInstance };
 }
 
@@ -111,7 +124,7 @@ export async function getTasksByFilter(filter) {
   }
 }
 
-export async function createTask(listId, title) {
+export async function createTask(listId, title, parentTaskId = null) {
   const db = await getDB();
   const listTasks = db.data.tasks.filter((t) => t.listId === listId);
   const task = {
@@ -125,6 +138,10 @@ export async function createTask(listId, title) {
     priority: 'none',
     dueDate: null,
     myDay: null,
+    scheduledDate: null,
+    scheduledTime: null,
+    scheduledDuration: null,
+    parentTaskId: parentTaskId || null,
     createdAt: new Date().toISOString(),
     sortOrder: listTasks.length,
   };
@@ -139,7 +156,7 @@ export async function updateTask(id, changes) {
   if (!task) return null;
 
   for (const [key, value] of Object.entries(changes)) {
-    if (key === 'id' || key === 'createdAt') continue;
+    if (key === 'id' || key === 'createdAt' || key === 'parentTaskId') continue;
     task[key] = value;
   }
 
@@ -155,9 +172,41 @@ export async function updateTask(id, changes) {
 
 export async function deleteTask(id) {
   const db = await getDB();
-  db.data.tasks = db.data.tasks.filter((t) => t.id !== id);
+  db.data.tasks = db.data.tasks.filter((t) => t.id !== id && t.parentTaskId !== id);
   await db.write();
   return true;
+}
+
+export async function getSubtasks(parentTaskId) {
+  const db = await getDB();
+  return db.data.tasks
+    .filter((t) => t.parentTaskId === parentTaskId)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+export async function getTask(id) {
+  const db = await getDB();
+  return db.data.tasks.find((t) => t.id === id) || null;
+}
+
+// --- Calendar Queries ---
+
+export async function getScheduledTasksForDate(date) {
+  const db = await getDB();
+  return db.data.tasks
+    .filter((t) => t.scheduledDate === date && !t.completed)
+    .sort((a, b) => {
+      if (a.scheduledTime < b.scheduledTime) return -1;
+      if (a.scheduledTime > b.scheduledTime) return 1;
+      return a.sortOrder - b.sortOrder;
+    });
+}
+
+export async function getUnscheduledTasks() {
+  const db = await getDB();
+  return db.data.tasks
+    .filter((t) => !t.scheduledDate && !t.completed)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 // --- Settings ---

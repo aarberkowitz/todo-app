@@ -56,7 +56,7 @@ export function initRenameDialog() {
   });
 }
 
-export function showRename(currentName, title = 'Rename list') {
+export function showRename(currentName, title = 'Rename project') {
   const overlay = $('#rename-overlay');
   const input = $('#rename-input');
   const msgEl = $('.dialog-message', overlay);

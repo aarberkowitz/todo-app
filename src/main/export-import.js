@@ -55,7 +55,7 @@ export async function importData() {
     defaultId: 0,
     cancelId: 0,
     title: 'Import Data',
-    message: 'This will replace all your current lists and tasks. Continue?',
+    message: 'This will replace all your current projects and tasks. Continue?',
   });
 
   if (response === 0) return { success: false, canceled: true };
@@ -93,12 +93,17 @@ function validateImportData(data) {
     }
   }
 
+  const taskIds = new Set(data.tasks.map((t) => t.id));
+
   for (const task of data.tasks) {
     if (!task.id || !task.listId || !task.title) {
       return { valid: false, error: 'Each task must have "id", "listId", and "title".' };
     }
     if (!listIds.has(task.listId)) {
       return { valid: false, error: `Task "${task.title}" references non-existent list "${task.listId}".` };
+    }
+    if (task.parentTaskId && !taskIds.has(task.parentTaskId)) {
+      return { valid: false, error: `Task "${task.title}" references non-existent parent task "${task.parentTaskId}".` };
     }
   }
 

@@ -215,3 +215,80 @@
   font-size: 15px;
   text-align: center;
 }
+
+/* Subtask styles */
+.subtask-row {
+  padding-left: 40px;
+}
+
+.subtask-toggle {
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  transition: transform 0.15s;
+  transform: rotate(0deg);
+}
+
+.subtask-toggle.expanded {
+  transform: rotate(90deg);
+}
+
+.subtask-toggle:hover {
+  color: var(--text-primary);
+}
+
+.task-add-subtask {
+  opacity: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-muted);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: var(--radius);
+  transition: opacity 0.1s, background 0.1s;
+}
+
+.task-row:hover .task-add-subtask {
+  opacity: 1;
+}
+
+.task-add-subtask:hover {
+  background: var(--bg-hover);
+  color: var(--accent);
+}
+
+.task-meta-subtasks {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.subtask-input-wrapper {
+  padding: 4px 12px 4px 52px;
+}
+
+.subtask-inline-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--bg-primary);
+  font-size: 14px;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 100, 207, 0.15);
+}

@@ -1,0 +1,281 @@
+/* Calendar View */
+#calendar-view {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Unscheduled Sidebar */
+#calendar-sidebar {
+  width: 260px;
+  min-width: 260px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.calendar-sidebar-header {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.calendar-sidebar-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.calendar-unscheduled-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.calendar-unscheduled-item {
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  cursor: grab;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-primary);
+  user-select: none;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.calendar-unscheduled-item:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.calendar-unscheduled-item.dragging {
+  opacity: 0.5;
+}
+
+.calendar-unscheduled-item .item-title {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-unscheduled-item .item-project {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Calendar Main Area */
+#calendar-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+/* Navigation Bar */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.calendar-nav-btn {
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.calendar-nav-btn:hover {
+  background: var(--bg-hover);
+}
+
+.calendar-date-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-left: 8px;
+}
+
+.calendar-date-picker {
+  margin-left: auto;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  cursor: pointer;
+}
+
+/* Time Grid Container */
+.calendar-grid-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.calendar-grid {
+  position: relative;
+  padding-left: 60px;
+  min-height: fit-content;
+}
+
+/* Time Slots */
+.calendar-slot {
+  height: 40px;
+  border-bottom: 1px dashed var(--border);
+  position: relative;
+}
+
+.calendar-slot.hour-start {
+  border-bottom: 1px solid var(--border);
+}
+
+.calendar-slot .slot-label {
+  position: absolute;
+  left: -56px;
+  top: -8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  width: 48px;
+  text-align: right;
+  pointer-events: none;
+}
+
+.calendar-slot.drag-over {
+  background: rgba(37, 100, 207, 0.08);
+}
+
+/* Current Time Indicator */
+.calendar-time-indicator {
+  position: absolute;
+  left: 50px;
+  right: 0;
+  height: 2px;
+  background: var(--danger);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.calendar-time-indicator::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+}
+
+/* Scheduled Task Blocks */
+.calendar-task-block {
+  position: absolute;
+  left: 64px;
+  right: 8px;
+  background: #e8f0fe;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 4px 8px;
+  cursor: grab;
+  overflow: hidden;
+  z-index: 2;
+  font-size: 12px;
+  user-select: none;
+  transition: box-shadow 0.15s;
+}
+
+.calendar-task-block:hover {
+  box-shadow: var(--shadow);
+}
+
+.calendar-task-block.moving {
+  opacity: 0.85;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  cursor: grabbing;
+}
+
+.calendar-task-block .block-title {
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-task-block .block-project {
+  font-size: 11px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-task-block .block-time {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Resize Handle */
+.calendar-task-block .resize-handle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  cursor: ns-resize;
+  background: transparent;
+}
+
+.calendar-task-block .resize-handle:hover {
+  background: rgba(37, 100, 207, 0.2);
+}
+
+/* Drop zone highlight for unscheduled sidebar */
+#calendar-sidebar.drag-over {
+  background: rgba(37, 100, 207, 0.05);
+}
+
+/* Empty state for unscheduled list */
+.calendar-unscheduled-empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Parent name on subtask blocks/items */
+.calendar-task-block .block-parent {
+  font-size: 11px;
+  color: var(--accent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-unscheduled-item .item-parent {
+  font-size: 11px;
+  color: var(--accent);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

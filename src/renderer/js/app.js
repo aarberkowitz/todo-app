@@ -2,6 +2,7 @@ import { initSidebar, refresh as refreshSidebar } from './sidebar.js';
 import { initTaskList } from './tasklist.js';
 import { initDetailPanel } from './detail-panel.js';
 import { initDialog, initRenameDialog } from './dialog.js';
+import { initCalendar } from './calendar.js';
 import * as state from './state.js';
 import * as bus from './event-bus.js';
 
@@ -14,21 +15,41 @@ async function init() {
   await initSidebar();
   initTaskList();
   initDetailPanel();
+  initCalendar();
 
   // Restore last view
   const settings = await window.api.getSettings();
-  if (settings.lastSelectedListId) {
+  const lists = await window.api.getLists();
+
+  if (settings.lastViewType === 'calendar') {
+    state.setView('calendar', new Date().toISOString().split('T')[0]);
+  } else if (settings.lastSelectedListId && lists.some(l => l.id === settings.lastSelectedListId)) {
     state.setView('list', settings.lastSelectedListId);
+  } else if (lists.length > 0) {
+    state.setView('list', lists[0].id);
   } else {
     state.setView('filter', 'my-day');
   }
 
-  // Save selected view to settings when it changes
+  // Toggle visibility and save settings when view changes
+  const taskPanel = document.getElementById('task-panel');
+  const detailPanel = document.getElementById('detail-panel');
+  const calendarView = document.getElementById('calendar-view');
+
   bus.on('view-changed', async ({ type, id }) => {
-    if (type === 'list') {
-      await window.api.updateSettings({ lastSelectedListId: id });
+    if (type === 'calendar') {
+      taskPanel.style.display = 'none';
+      detailPanel.style.display = 'none';
+      calendarView.style.display = 'flex';
+      await window.api.updateSettings({ lastSelectedListId: null, lastViewType: 'calendar' });
     } else {
-      await window.api.updateSettings({ lastSelectedListId: null });
+      calendarView.style.display = 'none';
+      taskPanel.style.display = '';
+      if (type === 'list') {
+        await window.api.updateSettings({ lastSelectedListId: id, lastViewType: 'list' });
+      } else {
+        await window.api.updateSettings({ lastSelectedListId: null, lastViewType: 'filter' });
+      }
     }
   });
 
@@ -66,7 +87,14 @@ async function init() {
   // Handle delete shortcut
   bus.on('delete-selected-task', async (taskId) => {
     const { showConfirm } = await import('./dialog.js');
-    const confirmed = await showConfirm('Delete this task? This cannot be undone.');
+
+    let message = 'Delete this task? This cannot be undone.';
+    const subtasks = await window.api.getSubtasks(taskId);
+    if (subtasks.length > 0) {
+      message = `Delete this task and its ${subtasks.length} subtask${subtasks.length !== 1 ? 's' : ''}? This cannot be undone.`;
+    }
+
+    const confirmed = await showConfirm(message);
     if (confirmed) {
       await window.api.deleteTask(taskId);
       state.clearSelectedTask();

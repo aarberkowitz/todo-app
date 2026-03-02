@@ -10,9 +10,13 @@ contextBridge.exposeInMainWorld('api', {
   // Tasks
   getTasksForList: (listId) => ipcRenderer.invoke('tasks:getForList', listId),
   getTasksByFilter: (filter) => ipcRenderer.invoke('tasks:getByFilter', filter),
-  createTask: (listId, title) => ipcRenderer.invoke('tasks:create', listId, title),
+  createTask: (listId, title, parentTaskId) => ipcRenderer.invoke('tasks:create', listId, title, parentTaskId),
   updateTask: (id, changes) => ipcRenderer.invoke('tasks:update', id, changes),
   deleteTask: (id) => ipcRenderer.invoke('tasks:delete', id),
+  getSubtasks: (parentTaskId) => ipcRenderer.invoke('tasks:getSubtasks', parentTaskId),
+  getTask: (id) => ipcRenderer.invoke('tasks:get', id),
+  getScheduledTasksForDate: (date) => ipcRenderer.invoke('tasks:getScheduledForDate', date),
+  getUnscheduledTasks: () => ipcRenderer.invoke('tasks:getUnscheduled'),
 
   // Export/Import
   exportData: () => ipcRenderer.invoke('data:export'),

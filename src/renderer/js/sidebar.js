@@ -1,4 +1,4 @@
-import { $, $$, createElement } from './utils.js';
+import { $, $$, createElement, todayString } from './utils.js';
 import * as bus from './event-bus.js';
 import * as state from './state.js';
 import { showConfirm, showRename } from './dialog.js';
@@ -32,7 +32,7 @@ function renderUserLists() {
         onClick: () => state.setView('list', list.id),
         onContextmenu: (e) => showContextMenu(e, list.id),
       }, [
-        createElement('span', { className: 'sidebar-icon' }, ['\u{1F4CB}']),
+        createElement('span', { className: 'sidebar-icon' }, ['\u{1F4C1}']),
         createElement('span', { className: 'sidebar-label' }, [list.name]),
         createElement('span', { className: 'sidebar-count', dataset: { listCount: list.id } }),
       ]),
@@ -45,13 +45,17 @@ function bindEvents() {
   // Smart list clicks
   for (const btn of $$('.smart-lists .sidebar-item')) {
     btn.addEventListener('click', () => {
-      state.setView('filter', btn.dataset.filter);
+      if (btn.dataset.filter === 'calendar') {
+        state.setView('calendar', todayString());
+      } else {
+        state.setView('filter', btn.dataset.filter);
+      }
     });
   }
 
   // Add list button
   $('#add-list-btn').addEventListener('click', async () => {
-    const name = await showRename('', 'New list');
+    const name = await showRename('', 'New project');
     if (!name) return;
     await window.api.createList(name);
     await loadLists();
@@ -127,7 +131,10 @@ function updateActive() {
     el.classList.remove('active');
   }
 
-  if (view.type === 'filter') {
+  if (view.type === 'calendar') {
+    const el = $(`.sidebar-item[data-filter="calendar"]`);
+    if (el) el.classList.add('active');
+  } else if (view.type === 'filter') {
     const el = $(`.sidebar-item[data-filter="${view.id}"]`);
     if (el) el.classList.add('active');
   } else if (view.type === 'list') {

@@ -20,7 +20,7 @@
       "package.json"
     ],
     "win": {
-      "target": "nsis",
+      "target": "portable",
       "icon": "build/icon.ico"
     },
     "mac": {
