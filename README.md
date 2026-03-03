@@ -9,11 +9,13 @@ A personal to-do list app inspired by Microsoft To Do. Runs as a standalone desk
 
 - **Task lists** — create, rename, and delete custom lists
 - **Tasks** — add, edit, delete, and mark complete with title and notes
+- **Subtasks** — one level of nesting under any task; independently scheduled, starred, and due-dated
 - **Due dates** — date picker on each task with overdue highlighting
 - **Priority** — none / low / medium / high with color-coded indicators
 - **Starred/important** — toggle star on any task
 - **My Day** — daily planning view; add tasks from any list, resets each day
 - **Smart lists** — My Day, Important, Planned, All Tasks (computed views)
+- **Calendar view** — day-based time grid with drag-and-drop scheduling and resizing
 - **Export/import** — JSON file via File menu for backups or moving between machines
 - **Keyboard shortcuts** — Ctrl+N (new task), Delete (remove task), Escape (close detail)
 - **Window state** — remembers size and position between sessions
@@ -24,10 +26,11 @@ A personal to-do list app inspired by Microsoft To Do. Runs as a standalone desk
 +------------------+------------------------------+------------------+
 |  SIDEBAR         |     TASK LIST                |  DETAIL PANEL    |
 |                  |                              |                  |
-|  My Day          |  List Name      [+ Add Task] |  Title (edit)    |
-|  Important       |  [ ] Task 1       ★ Mar 2   |  Add to My Day   |
-|  Planned         |  [x] Task 2       ★ Mar 1   |  Due date        |
-|  All Tasks       |                              |  Priority        |
+|  My Day          |  List Name      [+ Add Task] |  Subtask of: X   |
+|  Important       |  ▸ [ ] Task 1       ★ Mar 2 |  Title (edit)    |
+|  Planned         |      [ ] Subtask A          |  Add to My Day   |
+|  All Tasks       |      [ ] Subtask B          |  Due date        |
+|  Calendar        |    [ ] Task 2   2 subtasks   |  Priority        |
 |  -----------     |  ▸ Completed (2)             |  Notes           |
 |  Groceries       |                              |  [Delete]        |
 |  Work            |                              |                  |
@@ -58,14 +61,14 @@ npm start
 ### Build
 
 ```bash
-# Windows
+# Windows (portable .exe)
 npm run build:win
 
 # macOS
 npm run build:mac
 ```
 
-Packaged installers are output to the `dist/` directory.
+Packaged output goes to the `dist/` directory. The Windows build produces a portable `.exe` — no installer required.
 
 ## Tech Stack
 
